@@ -59,7 +59,9 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
+  config.active_job.queue_adapter = :good_job
+  config.good_job.execution_mode = :async
+  # config.good_job.on_thread_error = -> (exception) { Raven.capture_exception(exception) }
   # config.active_job.queue_name_prefix = "rails_starter_pg_esbuild_tailwind_production"
 
   config.action_mailer.perform_caching = false
