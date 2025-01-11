@@ -14,15 +14,14 @@ Ruby on Rails project starter with PostgreSQL esbuild TailwindCSS
 * [![esbuild][esbuild.io]][esbuild-url]
 
 * Ruby version
-3.1.2
+3.4.1
 
 * Rails version
-7.0.3
+~> 8.0.1
 
 * System dependencies
 Ruby 3+
-PostgreSQL 13+
-Graphviz (via Brew)
+PostgreSQL 14+
 
 * Configuration
 No initial setup needed
