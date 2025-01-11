@@ -55,9 +55,9 @@ No initial setup needed
    ```sh
    bundle install
    ```
-3. Install Yarn packages
+3. Install Node dependencies
    ```sh
-   yarn install
+   pnpm install
    ```
 3. Create and migrate database
    ```sh
