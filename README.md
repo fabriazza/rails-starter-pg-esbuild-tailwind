@@ -1,106 +1,172 @@
-# README
-<a name="readme-top"></a>
-## About The Project
+# Rails Starter: PostgreSQL, esbuild, and Tailwind CSS
 
-Ruby on Rails project starter with PostgreSQL esbuild TailwindCSS
+Modern Rails starter with PostgreSQL, Hotwire, esbuild, Tailwind CSS, Devise, Trestle, and database-backed Rails infrastructure.
 
+## Stack
 
-### Built With
+- Ruby 4.0.6
+- Rails `~> 8.1.3` (currently 8.1.3.1)
+- PostgreSQL 14+
+- Node.js 24.14.0 and pnpm 12.4.1
+- Propshaft, esbuild, Tailwind CSS 4
+- Turbo and Stimulus
+- Devise and Simple Form with Tailwind wrappers
+- Trestle admin
+- Solid Queue, Solid Cache, and Solid Cable
+- Minitest, RuboCop, Brakeman, and Bundler Audit
+- Docker, Thruster, and Kamal
 
-* [![Ruby][Ruby.org]][Ruby-url]
-* [![Rails][RubyOnRails.org]][Rails-url]
-* [![PostgreSQL][PostgreSQL.org]][PostgreSQL-url]
-* [![TailwindCSS][TailwindCSS.com]][TailwindCSS-url]
-* [![esbuild][esbuild.io]][esbuild-url]
+Redis is not required. Development uses in-process cache and Action Cable adapters; production uses dedicated PostgreSQL databases for cache, queue, and cable.
 
-* Ruby version
-3.4.1
+## Requirements
 
-* Rails version
-~> 8.0.1
+Install Ruby, Node.js, pnpm, PostgreSQL, and libvips (`brew install vips` on macOS). [mise](https://mise.jdx.dev/) installs Ruby and Node.js versions from `.tool-versions`; Corepack uses `packageManager` from `package.json` for pnpm:
 
-* System dependencies
-Ruby 3+
-PostgreSQL 14+
-
-* Configuration
-No initial setup needed
-
-* Database creation
 ```sh
-  rake db:create
-  rake db:migrate
-  ```
+mise install
+corepack enable
+corepack prepare pnpm@12.4.1 --activate
+```
 
-* Database initialization
-No initial setup needed
+Install Overmind or Foreman to run `Procfile.dev`.
 
-* How to run the test suite
+## Setup
+
 ```sh
-  guard -P rspec
-  ```
+git clone git@github.com:fabriazza/rails-starter-pg-esbuild-tailwind.git
+cd rails-starter-pg-esbuild-tailwind
+cp .env.example .env
+bin/setup
+```
 
-* Services (job queues, cache servers, search engines, etc.)
-[https://github.com/bensheldon/good_job](https://github.com/bensheldon/good_job)
+`bin/setup` installs Ruby and JavaScript dependencies, prepares database, builds assets, and starts development processes. Skip server startup when needed:
 
+```sh
+bin/setup --skip-server
+```
 
-### Installation
+Reset local database explicitly:
 
-1. Clone the repo
-   ```sh
-   git clone git@github.com:fabriazza/rails-starter-pg-esbuild-tailwind.git
-   ```
-3. Install Gems
-   ```sh
-   bundle install
-   ```
-3. Install Node dependencies
-   ```sh
-   pnpm install
-   ```
-3. Create and migrate database
-   ```sh
-   rake db:create
-   rake db:migrate
-   ```
-3. Start server
-   ```sh
-   overmind start
-   ```
+```sh
+bin/setup --reset --skip-server
+```
 
+## Development
 
-## Contributing
+```sh
+bin/dev
+```
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Processes:
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+- Rails web server on port 3000
+- esbuild watcher
+- Tailwind CSS watcher
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Health endpoint: `GET /up`.
 
+## Databases and Solid services
 
-## Contact
+Development and test use primary PostgreSQL databases. Production defines four PostgreSQL databases:
 
-Fabrizio Azzarri - [@fabriphix](https://twitter.com/fabriphix) - hello@fabrizioazzarri.it
+- `rails_starter_production`
+- `rails_starter_production_cache`
+- `rails_starter_production_queue`
+- `rails_starter_production_cable`
 
-Project Link: [https://github.com/fabriazza/rails-starter-pg-esbuild-tailwind](https://github.com/fabriazza/rails-starter-pg-esbuild-tailwind)
+Override connections with Rails database URL variables such as `DATABASE_URL`, `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, and `CABLE_DATABASE_URL`, or use `POSTGRES_HOST`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Prepare all configured databases:
 
+```sh
+RAILS_ENV=production bin/rails db:prepare
+```
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[Ruby]: https://img.shields.io/badge/Ruby-%23CC0000.svg?style=for-the-badge&logo=Ruby&logoColor=white
-[Ruby-url]: https://www.ruby-lang.org/
-[Rails]: https://img.shields.io/badge/rails-%23CC0000.svg?style=for-the-badge&logo=ruby-on-rails&logoColor=white
-[Rails-url]: https://rubyonrails.org/
-[PostgreSQL]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
-[PostgreSQL-url]: https://www.postgresql.org/
-[TailwindCSS]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
-[TailwindCSS-url]: https://tailwindcss.com/
-[esbuild]: https://img.shields.io/static/v1?style=for-the-badge&message=esbuild&color=222222&logo=esbuild&logoColor=FFCF00&label=
-[esbuild-url]: https://esbuild.github.io/
+For one-server deployments, set `SOLID_QUEUE_IN_PUMA=true`. For dedicated workers, leave it false and run:
+
+```sh
+bin/jobs
+```
+
+Validate worker and recurring-job configuration:
+
+```sh
+bin/jobs check
+```
+
+Queue behavior lives in `config/queue.yml`; recurring tasks live in `config/recurring.yml`.
+
+## Tests and quality checks
+
+```sh
+bin/rails test
+bin/rails test:system
+bin/rails zeitwerk:check
+bin/rubocop
+bin/brakeman --no-pager
+bin/bundler-audit check --update
+pnpm audit --audit-level high
+```
+
+Run local CI sequence:
+
+```sh
+bin/ci
+```
+
+GitHub Actions runs dependency installation, asset builds, Minitest, Zeitwerk, RuboCop, Brakeman, Bundler Audit, and pnpm audit. Dependabot tracks Bundler, npm/pnpm, GitHub Actions, and Docker dependencies.
+
+## Assets
+
+```sh
+pnpm run build
+pnpm run build:css
+```
+
+Production compilation:
+
+```sh
+SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production bin/rails assets:precompile
+```
+
+## Production configuration
+
+Copy values from `.env.example` into deployment secrets. Key settings:
+
+- `RAILS_MASTER_KEY`
+- `APP_HOST` and `APP_PROTOCOL`
+- `POSTGRES_HOST`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`
+- `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_DOMAIN`, `SMTP_USERNAME`, and `SMTP_PASSWORD`
+- `SOLID_QUEUE_IN_PUMA` and `JOB_CONCURRENCY`
+
+Local Active Storage is default. To use S3, add `aws-sdk-s3`, enable `amazon` in `config/storage.yml`, and set `ACTIVE_STORAGE_SERVICE=amazon` plus AWS variables.
+
+## Docker
+
+Dockerfile builds Ruby gems and pnpm assets in a multi-stage image, then runs Rails through Thruster:
+
+```sh
+docker build -t rails-starter .
+docker run --rm -p 80:80 \
+  -e RAILS_MASTER_KEY \
+  -e DATABASE_URL \
+  rails-starter
+```
+
+Container entrypoint runs `db:prepare` before Rails server startup.
+
+## Kamal
+
+`config/deploy.yml` is provider-neutral example. Before deploying:
+
+1. Replace image, registry, server, proxy host, and PostgreSQL host placeholders.
+2. Export secrets referenced by `.kamal/secrets`.
+3. Provision primary, cache, queue, and cable PostgreSQL databases.
+4. Choose Solid Queue inside Puma or dedicated `job` role.
+
+```sh
+bin/kamal setup
+bin/kamal deploy
+```
+
+Never commit raw secrets or local `.env` files.
