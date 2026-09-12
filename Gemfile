@@ -1,52 +1,58 @@
 source "https://rubygems.org"
+
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.4.1"
+ruby "4.0.6"
 
-gem "rails", "~> 8.0.1", ">= 8.0.1"
+gem "rails", "~> 8.1.3"
+gem "pg", "~> 1.6"
+gem "puma", ">= 7.0"
+
+gem "propshaft"
+gem "cssbundling-rails"
+gem "jsbundling-rails"
+gem "stimulus-rails"
+gem "turbo-rails"
+
+gem "solid_cache"
+gem "solid_cable"
+gem "solid_queue"
 
 gem "bootsnap", require: false
-gem "cssbundling-rails"
-gem "devise", "~> 4.8"
-gem "good_job", "~> 3.4"
-gem "image_processing", "~> 1.2"
-gem "inline_svg", "~> 1.8"
+gem "image_processing", "~> 2.1"
+gem "ruby-vips", "~> 2.3"
 gem "jbuilder"
-gem "jsbundling-rails"
-gem "pg", "~> 1.1"
-gem "puma", "~> 6.4.3"
-gem "redis", "~> 4.0"
-gem "simple_form", "~> 5.1"
-gem "simple_form-tailwind", "~> 0.1.1"
-gem "sitemap_generator", "~> 6.3"
-gem "sprockets-rails"
-gem "stimulus-rails"
-gem "trestle", "~> 0.10.0"
+
+gem "devise", "~> 5.0"
+gem "inline_svg"
+gem "simple_form"
+gem "simple_form-tailwind"
+gem "sitemap_generator"
+gem "trestle", "~> 0.10.1"
 gem "trestle-search", "~> 0.5.1"
-gem "turbo-rails"
-gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
+
+gem "kamal", require: false
+gem "thruster", require: false
+
+gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 group :development, :test do
-  gem "debug", platforms: %i[ mri mingw x64_mingw ]
-  gem 'dotenv-rails'
-  gem 'factory_bot_rails'
-  gem 'rspec-rails', '~> 5.0'
+  gem "brakeman", require: false
+  gem "bundler-audit", require: false
+  gem "debug", platforms: :mri, require: "debug/prelude"
+  gem "dotenv-rails"
+  gem "factory_bot_rails"
+  gem "rubocop-rails-omakase", require: false
 end
 
 group :development do
-  gem 'brakeman'
-  gem "bullet", "~> 7.2"
-  gem 'guard'
-  gem 'guard-rspec', require: false
+  gem "bullet"
   gem "letter_opener"
-  gem "rubocop-rails-omakase", require: false
+  gem "rack-mini-profiler", require: false
   gem "web-console"
-  gem 'rack-mini-profiler',require: false
 end
 
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
-  gem "webdrivers"
 end
-
