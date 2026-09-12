@@ -1,17 +1,21 @@
 {
-  "name": "app",
-  "private": "true",
-  "dependencies": {
-    "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo-rails": "^8.0.0",
-    "autoprefixer": "^10.4.17",
-    "axios": "^1.6.7",
-    "esbuild": "^0.21.5",
-    "postcss": "^8.4.34",
-    "tailwindcss": "^3.4.4"
+  "name": "rails-starter-pg-esbuild-tailwind",
+  "private": true,
+  "packageManager": "pnpm@12.4.1",
+  "engines": {
+    "node": ">=24"
   },
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets --minify",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets --minify",
+    "build:css": "tailwindcss -i app/assets/stylesheets/application.tailwind.css -o app/assets/builds/application.css --minify"
+  },
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.23"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "esbuild": "^0.28.2",
+    "tailwindcss": "^4.3.3"
   }
 }
