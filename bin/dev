@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
+set -e
 
-if ! foreman version &> /dev/null
-then
-  echo "Installing foreman..."
-  gem install foreman
+if command -v overmind >/dev/null 2>&1; then
+  exec overmind start -f Procfile.dev "$@"
+elif command -v foreman >/dev/null 2>&1; then
+  exec foreman start -f Procfile.dev "$@"
+else
+  echo "Install overmind or foreman to run development processes." >&2
+  exit 1
 fi
-
-foreman start -f Procfile.dev "$@"

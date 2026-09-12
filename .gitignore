@@ -7,9 +7,9 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore all environment files (except templates) only for development. Remove comments to use it in production.
-# /.env*
-# !/.env*.erb
+# Ignore local environment files; keep documented templates.
+/.env*
+!/.env.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -31,12 +31,14 @@
 
 /public/assets
 
+# Ignore JavaScript dependencies.
+/node_modules
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
-/node_modules
 */.DS_Store
 /__pycache__/*

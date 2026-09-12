@@ -1,0 +1,60 @@
+service: rails-starter
+image: your-user/rails-starter
+
+servers:
+  web:
+    - 192.0.2.1
+  # For multi-server deployments, disable SOLID_QUEUE_IN_PUMA and enable this role.
+  # job:
+  #   hosts:
+  #     - 192.0.2.1
+  #   cmd: bin/jobs
+
+proxy:
+  ssl: true
+  host: app.example.com
+
+registry:
+  server: ghcr.io
+  username: your-github-user
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    APP_HOST: app.example.com
+    APP_PROTOCOL: https
+    POSTGRES_HOST: 192.0.2.2
+    POSTGRES_USER: rails_starter
+    SOLID_QUEUE_IN_PUMA: true
+    RAILS_LOG_LEVEL: info
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+    - SMTP_PASSWORD
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
+
+asset_path: /rails/public/assets
+
+builder:
+  arch: amd64
+
+# Example PostgreSQL accessory. Replace host/password and provision the primary,
+# cache, queue, and cable databases before first deploy.
+# accessories:
+#   db:
+#     image: postgres:18
+#     host: 192.0.2.2
+#     port: "127.0.0.1:5432:5432"
+#     env:
+#       clear:
+#         POSTGRES_USER: rails_starter
+#       secret:
+#         - POSTGRES_PASSWORD
+#     directories:
+#       - data:/var/lib/postgresql/data
