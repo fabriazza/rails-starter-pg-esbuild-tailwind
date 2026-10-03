@@ -19,7 +19,7 @@ gem "solid_cable"
 gem "solid_queue"
 
 gem "bootsnap", require: false
-gem "image_processing", "~> 2.1"
+gem "image_processing", "~> 2.2"
 gem "ruby-vips", "~> 2.3"
 gem "jbuilder"
 
